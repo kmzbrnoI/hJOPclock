@@ -9,7 +9,8 @@ uses
   version in 'version.pas',
   resusc in 'resusc.pas',
   tcpThread in 'tcpThread.pas',
-  tcpClient in 'tcpClient.pas';
+  tcpClient in 'tcpClient.pas',
+  globConfig in 'globConfig.pas';
 
 {$R *.res}
 

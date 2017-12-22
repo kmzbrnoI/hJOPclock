@@ -33,8 +33,6 @@ type
       procedure SaveFile(const filename:string); overload;
       procedure SaveFile(); overload;
 
-      function GetAuthNonNullORSCnt():Cardinal;
-
       property fn:string read filename;
   end;
 
@@ -88,9 +86,9 @@ end;
 ////////////////////////////////////////////////////////////////////////////////
 
 initialization
-  GlobConfig := TGlobConfig.Create();
+  config := TGlobConfig.Create();
 
 finalization
-  FreeAndNil(GlobConfig);
+  FreeAndNil(config);
 
 end.//unit

@@ -10,7 +10,8 @@ unit tcpClient;
 interface
 
 uses SysUtils, IdTCPClient, tcpThread, IdTCPConnection, IdGlobal, ExtCtrls,
-     Classes, StrUtils, Generics.Collections, resusc, parseHelper, Windows;
+     Classes, StrUtils, Generics.Collections, resusc, parseHelper, Windows,
+     Forms;
 
 const
   _DEFAULT_PORT = 5896;
@@ -44,9 +45,7 @@ type
      procedure DataReceived(const data: string);
      procedure Timeout();   // timeout from socket = broken pipe
 
-     procedure ParseGlobal();
-     procedure ParseOR();
-     procedure ParseORChange();
+     procedure Parse();
 
      procedure ConnetionResusced(Sender:TObject);
      procedure SendPing(Sedner:TObject);
@@ -74,6 +73,8 @@ var
 
 implementation
 
+uses globConfig;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 constructor TPanelTCPClient.Create();
@@ -95,7 +96,7 @@ begin
  Self.fstatus := TPanelConnectionStatus.closed;
  Self.resusct := nil;
  self.recusc_destroy := false;
-end;//ctor
+end;
 
 destructor TPanelTCPClient.Destroy();
 begin
@@ -106,7 +107,7 @@ begin
 
  end;
 
- // Znicime resuscitacni vlakno (vlakno obnovujici spojeni).
+ // Destroy resusc thread.
  if (Assigned(Self.resusct)) then
   begin
    try
@@ -131,7 +132,7 @@ begin
  finally
    inherited;
  end;
-end;//dtor
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -170,7 +171,7 @@ begin
  Self.control_disconnect := false;
 
  Result := 0;
-end;//function
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -195,10 +196,10 @@ begin
  end;
 
  Result := 0;
-end;//function
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
-// eventy z IdTCPClient
+// IdTCPClient events
 
 procedure TPanelTCPClient.OnTcpClientConnected(Sender: TObject);
 begin
@@ -234,19 +235,15 @@ begin
 
  { TODO main for controls }
 
- // resuscitace
- // Resuscitaci povolime, pokud jsme od serveru byli odpojeni jinak, nez vlastni vuli.
- if ((not Self.control_disconnect) and (GlobConfig.data.resuscitation)) then
+ // resuscitation
+ if (not Self.control_disconnect) then
   begin
    Resusct := TResuscitation.Create(true, Self.ConnetionResusced);
-   Resusct.server_ip   := GlobConfig.data.server.host;
-   Resusct.server_port := GlobConfig.data.server.port;
+   Resusct.server_ip   := config.data.server.host;
+   Resusct.server_port := config.data.server.port;
    Resusct.Resume();
   end;
-
- if (F_Main.close_app) then
-   F_Main.Close();
-end;//procedure
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -259,15 +256,11 @@ begin
  Self.data := data;
 
  try
-   // zakladni rozdeleni parsovani - na data, ktera jsou obecna a na data pro konkretni oblast rizeni
-   if (Self.parsed[0] = '-') then
-    Self.ParseGlobal()
-   else
-    Self.ParseOR();
+   Self.Parse();
  except
 
  end;
-end;//procedure
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -275,11 +268,11 @@ procedure TPanelTCPClient.Timeout();
 begin
  Self.OnTcpClientDisconnected(Self);
  // Errors.writeerror('Spojení se serverem pøerušeno', 'KLIENT', '-'); TODO
-end;//procedure
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TPanelTCPClient.ParseGlobal();
+procedure TPanelTCPClient.Parse();
 var i:Integer;
     found:boolean;
 begin
@@ -302,15 +295,14 @@ begin
        'Upozornìní', MB_OK OR MB_ICONWARNING);
 
    Self.fstatus := TPanelConnectionStatus.opened;
-   Self.SendLn('-;OR-LIST;');
-   PanelTCPClient.SendLn('-;F-VYZN-GET;');
-   PanelTCPClient.SendLn('-;MAUS;'+IntToStr(Integer(BridgeClient.authStatus = tuLiAuthStatus.yes)));
   end
 
  else if (parsed[1] = 'MOD-CAS') then
-  ModCas.ParseData(parsed)
+  begin
+   { TODO }
+  end;
 
-end;//procedure
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -328,14 +320,13 @@ begin
    if (Self.fstatus = opened) then
     Self.OnTcpClientDisconnected(Self);
  end;
-end;//procedure
+end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
 procedure TPanelTCPClient.ConnetionResusced(Sender:TObject);
 begin
- Self.Connect(GlobConfig.data.server.host, GlobConfig.data.server.port);
- while (Errors.Count > 0) do Errors.removeerror();
+ Self.Connect(config.data.server.host, config.data.server.port);
  Self.recusc_destroy := true;
 end;
 
@@ -378,4 +369,4 @@ initialization
 finalization
  FreeAndNil(PanelTCPCLient);
 
-end.//unit
+end.

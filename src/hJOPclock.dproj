@@ -49,6 +49,7 @@
 			<DCCReference Include="resusc.pas"/>
 			<DCCReference Include="tcpThread.pas"/>
 			<DCCReference Include="tcpClient.pas"/>
+			<DCCReference Include="globConfig.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
