@@ -11,7 +11,7 @@ interface
 
 uses SysUtils, IdTCPClient, tcpThread, IdTCPConnection, IdGlobal, ExtCtrls,
      Classes, StrUtils, Generics.Collections, resusc, parseHelper, Windows,
-     Forms;
+     Forms, Graphics;
 
 const
   _DEFAULT_PORT = 5896;
@@ -72,7 +72,7 @@ var
 
 implementation
 
-uses globConfig;
+uses globConfig, main, modelTime;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -156,7 +156,7 @@ begin
  Self.tcpClient.Port := port;
 
  Self.fstatus := TPanelConnectionStatus.opening;
- // F_Main.T_MainTimer(nil); TODO
+ F_Main.UpdateStatus('Pøipojuji...', clBlue);
 
  try
    Self.tcpClient.Connect();
@@ -211,11 +211,7 @@ begin
   raise;
  end;
 
- {
- F_Main.A_Connect.Enabled    := false;
- F_Main.A_ReAuth.Enabled     := true;
- F_Main.A_Disconnect.Enabled := true; TODO
- }
+ F_Main.UpdateStatus('Pøipojeno', clBlack);
 
  Self.fstatus := TPanelConnectionStatus.handshake;
  Self.pingTimer.Enabled := true;
@@ -231,7 +227,8 @@ begin
  Self.fstatus := TPanelConnectionStatus.closed;
  Self.pingTimer.Enabled := false;
 
- { TODO main for controls }
+ mt.Reset();
+ F_Main.UpdateStatus('Odpojeno', clRed);
 
  // resuscitation
  if (not Self.control_disconnect) then
@@ -291,9 +288,7 @@ begin
   end
 
  else if (parsed[1] = 'MOD-CAS') then
-  begin
-   { TODO }
-  end;
+   mt.ParseData(parsed);
 
 end;
 

@@ -12,7 +12,8 @@ uses
   resusc in 'resusc.pas',
   tcpThread in 'tcpThread.pas',
   tcpClient in 'tcpClient.pas',
-  globConfig in 'globConfig.pas';
+  globConfig in 'globConfig.pas',
+  modelTime in 'modelTime.pas';
 
 {$R *.res}
 
@@ -20,7 +21,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TF_Main, F_Main);
-
   try
     config.LoadFile();
   except

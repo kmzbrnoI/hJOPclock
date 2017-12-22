@@ -16,6 +16,7 @@ type
 
   TGlobConfigData = record
     server:TServerConfig;
+    seconds:boolean;
   end;
 
   TGlobConfig = class
@@ -47,8 +48,6 @@ uses tcpClient;
 
 procedure TGlobConfig.LoadFile(const filename:string = _DEFAULT_FN);
 var ini:TMemIniFile;
-    str:TStrings;
-    i:Integer;
 begin
  ini := TMemIniFile.Create(filename, TEncoding.UTF8);
  try
@@ -56,6 +55,7 @@ begin
 
    Self.data.server.host := ini.ReadString('server', 'host', 'localhost');
    Self.data.server.port := ini.ReadInteger('server', 'port', _DEFAULT_PORT);
+   Self.data.seconds     := ini.ReadBool('time', 'seconds', true);
  finally
    ini.Free();
  end;
@@ -63,14 +63,13 @@ end;
 
 procedure TGlobConfig.SaveFile(const filename:string);
 var ini:TMemIniFile;
-    i:Integer;
-    str:string;
 begin
  ini := TMemIniFile.Create(filename, TEncoding.UTF8);
 
  try
    ini.WriteString('server', 'host', Self.data.server.host);
    ini.WriteInteger('server', 'port', Self.data.server.port);
+   ini.WriteBool('time', 'seconds', Self.data.seconds);
 
    ini.UpdateFile();
  finally

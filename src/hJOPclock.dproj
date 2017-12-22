@@ -50,6 +50,7 @@
 			<DCCReference Include="tcpThread.pas"/>
 			<DCCReference Include="tcpClient.pas"/>
 			<DCCReference Include="globConfig.pas"/>
+			<DCCReference Include="modelTime.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
