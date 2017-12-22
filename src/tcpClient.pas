@@ -1,7 +1,7 @@
 unit tcpClient;
 
 {
-  TCP client for communication with hJOPserver
+  TCP client for communication with hJOPserver.
 
   Specification of communication protocol is available at:
   https://github.com/kmzbrnoI/hJOPserver/wiki/panelServer.
@@ -26,7 +26,7 @@ const
 type
   TPanelConnectionStatus = (closed, opening, handshake, opened);
 
-  TPanelTCPClient = class
+  TTCPClient = class
    private const
     _PROTOCOL_VERSION = '1.1';
 
@@ -37,6 +37,7 @@ type
     parsed: TStrings;
     data:string;
     control_disconnect:boolean;
+    resusct : TResuscitation;
     recusc_destroy:boolean;
     pingTimer:TTimer;
 
@@ -52,9 +53,6 @@ type
 
    public
 
-    resusct : TResuscitation;
-    openned_by_ipc: boolean;
-
      constructor Create();
      destructor Destroy(); override;
 
@@ -64,12 +62,13 @@ type
      procedure SendLn(str:string);
 
      procedure Update();
+     procedure InitResusc(server: string; port: Word);
 
       property status:TPanelConnectionStatus read fstatus;
   end;//TPanelTCPClient
 
 var
-  PanelTCPClient : TPanelTCPClient;
+  client : TTCPClient;
 
 implementation
 
@@ -77,7 +76,7 @@ uses globConfig;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-constructor TPanelTCPClient.Create();
+constructor TTCPClient.Create();
 begin
  inherited;
 
@@ -94,11 +93,12 @@ begin
  Self.tcpClient.ConnectTimeout := 1500;
 
  Self.fstatus := TPanelConnectionStatus.closed;
+
+ Self.recusc_destroy := false;
  Self.resusct := nil;
- self.recusc_destroy := false;
 end;
 
-destructor TPanelTCPClient.Destroy();
+destructor TTCPClient.Destroy();
 begin
  try
    if (Self.tcpClient.Connected) then
@@ -136,7 +136,7 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function TPanelTCPClient.Connect(host:string; port:Word):Integer;
+function TTCPClient.Connect(host:string; port:Word):Integer;
 begin
  try
    // without .Clear() .Connected() sometimes returns true when actually not connected
@@ -154,8 +154,6 @@ begin
 
  Self.tcpClient.Host := host;
  Self.tcpClient.Port := port;
-
- Self.openned_by_ipc := false;
 
  Self.fstatus := TPanelConnectionStatus.opening;
  // F_Main.T_MainTimer(nil); TODO
@@ -175,7 +173,7 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function TPanelTCPClient.Disconnect():Integer;
+function TTCPClient.Disconnect():Integer;
 begin
  try
    if (not Self.tcpClient.Connected) then Exit(1);
@@ -201,7 +199,7 @@ end;
 ////////////////////////////////////////////////////////////////////////////////
 // IdTCPClient events
 
-procedure TPanelTCPClient.OnTcpClientConnected(Sender: TObject);
+procedure TTCPClient.OnTcpClientConnected(Sender: TObject);
 begin
  try
   Self.rthread := TReadingThread.Create((Sender as TIdTCPClient));
@@ -226,7 +224,7 @@ begin
  Self.SendLn('-;HELLO;'+Self._PROTOCOL_VERSION+';');
 end;//procedure
 
-procedure TPanelTCPClient.OnTcpClientDisconnected(Sender: TObject);
+procedure TTCPClient.OnTcpClientDisconnected(Sender: TObject);
 begin
  if Assigned(Self.rthread) then Self.rthread.Terminate;
 
@@ -237,18 +235,13 @@ begin
 
  // resuscitation
  if (not Self.control_disconnect) then
-  begin
-   Resusct := TResuscitation.Create(true, Self.ConnetionResusced);
-   Resusct.server_ip   := config.data.server.host;
-   Resusct.server_port := config.data.server.port;
-   Resusct.Resume();
-  end;
+   Self.InitResusc(config.data.server.host, config.data.server.port);
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
 // parsing prijatych dat
-procedure TPanelTCPClient.DataReceived(const data: string);
+procedure TTCPClient.DataReceived(const data: string);
 begin
  Self.parsed.Clear();
  ExtractStringsEx([';'], [#13, #10], data, Self.parsed);
@@ -264,7 +257,7 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TPanelTCPClient.Timeout();
+procedure TTCPClient.Timeout();
 begin
  Self.OnTcpClientDisconnected(Self);
  // Errors.writeerror('Spojení se serverem pøerušeno', 'KLIENT', '-'); TODO
@@ -272,7 +265,7 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TPanelTCPClient.Parse();
+procedure TTCPClient.Parse();
 var i:Integer;
     found:boolean;
 begin
@@ -306,7 +299,7 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TPanelTCPClient.SendLn(str:string);
+procedure TTCPClient.SendLn(str:string);
 begin
  try
    if (not Self.tcpClient.Connected) then Exit;
@@ -324,7 +317,7 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TPanelTCPClient.ConnetionResusced(Sender:TObject);
+procedure TTCPClient.ConnetionResusced(Sender:TObject);
 begin
  Self.Connect(config.data.server.host, config.data.server.port);
  Self.recusc_destroy := true;
@@ -332,7 +325,7 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TPanelTCPClient.Update();
+procedure TTCPClient.Update();
 begin
  if (Self.recusc_destroy) then
   begin
@@ -351,7 +344,7 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-procedure TPanelTCPClient.SendPing(Sedner:TObject);
+procedure TTCPClient.SendPing(Sedner:TObject);
 begin
  try
    if (Self.tcpClient.Connected) then
@@ -363,10 +356,20 @@ end;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+procedure TTCPClient.InitResusc(server: string; port: Word);
+begin
+ Self.resusct := TResuscitation.Create(true, Self.ConnetionResusced);
+ Self.resusct.server_ip   := server;
+ Self.resusct.server_port := port;
+ Self.resusct.Resume();
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
 initialization
- PanelTCPClient := TPanelTCPClient.Create;
+ client := TTCPClient.Create;
 
 finalization
- FreeAndNil(PanelTCPCLient);
+ FreeAndNil(cLient);
 
 end.
