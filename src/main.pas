@@ -12,10 +12,12 @@ type
     L_Time: TLabel;
     AL_Main: TActionList;
     A_Seconds: TAction;
+    A_Help: TAction;
     procedure P_TimeResize(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure A_SecondsExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure A_HelpExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -113,6 +115,16 @@ procedure TF_Main.UpdateTime(time:string; color:TColor = clBlack);
 begin
  Self.L_Time.Caption := time;
  Self.L_Time.Font.Color := color;
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+procedure TF_Main.A_HelpExecute(Sender: TObject);
+begin
+ Application.MessageBox(PChar('hJOPclock v' + GetVersion(Application.ExeName)+'.'+#13#10+
+                        'Vytvoøil Jan Horáèek pro KMŽ Brno I'),
+                        'Informace',
+                        MB_OK or MB_ICONINFORMATION)
 end;
 
 ////////////////////////////////////////////////////////////////////////////////

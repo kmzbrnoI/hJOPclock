@@ -52,5 +52,10 @@ object F_Main: TF_Main
       ShortCut = 16467
       OnExecute = A_SecondsExecute
     end
+    object A_Help: TAction
+      Caption = 'A_Help'
+      ShortCut = 112
+      OnExecute = A_HelpExecute
+    end
   end
 end
