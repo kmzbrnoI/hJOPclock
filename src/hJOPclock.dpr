@@ -20,6 +20,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.Title := 'hJOPclock';
   Application.CreateForm(TF_Main, F_Main);
   try
     config.LoadFile();
