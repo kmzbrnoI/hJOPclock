@@ -15,6 +15,7 @@ type
     procedure P_TimeResize(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure A_SecondsExecute(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,7 +30,7 @@ implementation
 
 {$R *.dfm}
 
-uses tcpClient, globConfig, modelTime;
+uses tcpClient, globConfig, modelTime, version;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -59,6 +60,11 @@ begin
    on E:Exception do
      Application.MessageBox(PChar(E.Message), 'Chyba', MB_OK or MB_ICONERROR);
  end;
+end;
+
+procedure TF_Main.FormCreate(Sender: TObject);
+begin
+ Self.Caption := Application.Title + '  v' + GetVersion(Application.ExeName);
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
