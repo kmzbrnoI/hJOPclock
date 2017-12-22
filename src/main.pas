@@ -13,11 +13,13 @@ type
     AL_Main: TActionList;
     A_Seconds: TAction;
     A_Help: TAction;
+    A_Maximize: TAction;
     procedure P_TimeResize(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure A_SecondsExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure A_HelpExecute(Sender: TObject);
+    procedure A_MaximizeExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -125,6 +127,19 @@ begin
                         'Vytvoøil Jan Horáèek pro KMŽ Brno I'),
                         'Informace',
                         MB_OK or MB_ICONINFORMATION)
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+procedure TF_Main.A_MaximizeExecute(Sender: TObject);
+begin
+ if (Self.BorderStyle = bsNone) then
+  begin
+   Self.BorderStyle := bsSizeable;
+  end else begin
+   Self.BorderStyle := bsNone;
+   Self.WindowState := wsMaximized;
+  end;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////

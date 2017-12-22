@@ -57,5 +57,10 @@ object F_Main: TF_Main
       ShortCut = 112
       OnExecute = A_HelpExecute
     end
+    object A_Maximize: TAction
+      Caption = 'A_Maximize'
+      ShortCut = 16454
+      OnExecute = A_MaximizeExecute
+    end
   end
 end
