@@ -22,8 +22,13 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.Title := 'hJOPclock';
   Application.CreateForm(TF_Main, F_Main);
+
   try
-    config.LoadFile();
+    if (ParamCount > 0) then
+      config.LoadFile(ParamStr(1))
+    else
+      config.LoadFile();
+
   except
     on E:Exception do
       Application.MessageBox(PChar('Nepodaøilo se naèíst konfiguraèní soubor'+#1310+E.Message),
