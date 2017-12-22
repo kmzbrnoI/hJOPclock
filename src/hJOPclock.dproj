@@ -44,6 +44,11 @@
 			<DCCReference Include="main.pas">
 				<Form>F_Main</Form>
 			</DCCReference>
+			<DCCReference Include="parseHelper.pas"/>
+			<DCCReference Include="version.pas"/>
+			<DCCReference Include="resusc.pas"/>
+			<DCCReference Include="tcpThread.pas"/>
+			<DCCReference Include="tcpClient.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

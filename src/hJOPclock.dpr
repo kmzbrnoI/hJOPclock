@@ -4,7 +4,12 @@ program hJOPclock;
 
 uses
   Forms,
-  main in 'main.pas' {F_Main};
+  main in 'main.pas' {F_Main},
+  parseHelper in 'parseHelper.pas',
+  version in 'version.pas',
+  resusc in 'resusc.pas',
+  tcpThread in 'tcpThread.pas',
+  tcpClient in 'tcpClient.pas';
 
 {$R *.res}
 
