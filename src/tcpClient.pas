@@ -38,7 +38,6 @@ type
     data:string;
     control_disconnect:boolean;
     resusct : TResuscitation;
-    recusc_destroy:boolean;
     pingTimer:TTimer;
 
      procedure OnTcpClientConnected(Sender: TObject);
@@ -61,7 +60,6 @@ type
 
      procedure SendLn(str:string);
 
-     procedure Update();
      procedure InitResusc(server: string; port: Word);
 
       property status:TPanelConnectionStatus read fstatus;
@@ -94,7 +92,6 @@ begin
 
  Self.fstatus := TPanelConnectionStatus.closed;
 
- Self.recusc_destroy := false;
  Self.resusct := nil;
 end;
 
@@ -315,26 +312,6 @@ end;
 procedure TTCPClient.ConnetionResusced(Sender:TObject);
 begin
  Self.Connect(config.data.server.host, config.data.server.port);
- Self.recusc_destroy := true;
-end;
-
-////////////////////////////////////////////////////////////////////////////////
-
-procedure TTCPClient.Update();
-begin
- if (Self.recusc_destroy) then
-  begin
-   Self.recusc_destroy := false;
-   try
-     Self.resusct.Terminate();
-   finally
-     if Assigned(Self.resusct) then
-     begin
-       Self.resusct.WaitFor;
-       FreeAndNil(Self.resusct);
-     end;
-   end;
-  end;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -353,7 +330,8 @@ end;
 
 procedure TTCPClient.InitResusc(server: string; port: Word);
 begin
- Self.resusct := TResuscitation.Create(true, Self.ConnetionResusced);
+ if (Self.resusct = nil) then
+   Self.resusct := TResuscitation.Create(true, Self.ConnetionResusced);
  Self.resusct.server_ip   := server;
  Self.resusct.server_port := port;
  Self.resusct.Resume();

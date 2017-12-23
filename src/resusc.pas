@@ -73,10 +73,11 @@ begin
       IdTCPClient.Host := Self.server_ip;
       IdTCPClient.Port := Self.server_port;
       IdTCPClient.Connect();
+      IdTCPClient.Disconnect();
 
       Self.frunning := true;
-      Self.Terminate();
       if (Assigned(Self.fOnActivate)) then Synchronize(Activate);
+      Self.Suspend();
     except
       Self.frunning := false;
     end;
@@ -84,11 +85,11 @@ begin
    for i := 0 to 200 do
     begin
      sleep(1);
-     if (Terminated) then break;     
+     if (Terminated) then break;
     end;
   end;//while
 
-  IdTCPClient.Free();
+ IdTCPClient.Free();
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
