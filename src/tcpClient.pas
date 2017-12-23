@@ -11,7 +11,7 @@ interface
 
 uses SysUtils, IdTCPClient, tcpThread, IdTCPConnection, IdGlobal, ExtCtrls,
      Classes, StrUtils, Generics.Collections, resusc, parseHelper, Windows,
-     Forms, Graphics;
+     Forms, Graphics, IdStack;
 
 const
   _DEFAULT_PORT = 5896;
@@ -311,7 +311,12 @@ end;
 
 procedure TTCPClient.ConnetionResusced(Sender:TObject);
 begin
- Self.Connect(config.data.server.host, config.data.server.port);
+ try
+   Self.Connect(config.data.server.host, config.data.server.port);
+ except
+   on E:EIdSocketError do
+     Self.InitResusc(config.data.server.host, config.data.server.port);
+ end;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -24,10 +24,6 @@ object F_Main: TF_Main
     BevelOuter = bvNone
     TabOrder = 0
     OnResize = P_TimeResize
-    ExplicitLeft = 10
-    ExplicitTop = 10
-    ExplicitWidth = 607
-    ExplicitHeight = 311
     object L_Time: TLabel
       Left = 16
       Top = 72
