@@ -20,7 +20,7 @@ var
   handle: THandle;
   buffer: pchar;
   pinfo: ^VS_FIXEDFILEINFO;
-  Major, Minor, Release: word;
+  Major, Minor: word;
 begin
   Result := 'Není dostupná';
   size := GetFileVersionInfoSize(Pointer(FileName), handle);
@@ -31,8 +31,7 @@ begin
       if VerQueryValue(buffer, '\', pointer(pinfo), len) then begin
         Major   := HiWord(pinfo.dwFileVersionMS);
         Minor   := LoWord(pinfo.dwFileVersionMS);
-        Release := HiWord(pinfo.dwFileVersionLS);
-        Result := Format('%d.%d.%d',[Major, Minor, Release]);
+        Result := Format('%d.%d',[Major, Minor]);
       end;
     FreeMem(buffer);
   end;
