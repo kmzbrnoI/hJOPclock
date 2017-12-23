@@ -5,6 +5,7 @@ object F_Main: TF_Main
   ClientHeight = 337
   ClientWidth = 635
   Color = clBtnFace
+  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -13,32 +14,24 @@ object F_Main: TF_Main
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
+  OnResize = P_TimeResize
   PixelsPerInch = 96
   TextHeight = 13
-  object P_Time: TPanel
-    Left = 0
-    Top = 0
-    Width = 635
-    Height = 337
-    Align = alClient
-    BevelOuter = bvNone
-    TabOrder = 0
-    OnResize = P_TimeResize
-    object L_Time: TLabel
-      Left = 16
-      Top = 72
-      Width = 580
-      Height = 164
-      Align = alCustom
-      Alignment = taCenter
-      Caption = 'Odpojeno'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clRed
-      Font.Height = -136
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
+  object L_Time: TLabel
+    Left = 16
+    Top = 72
+    Width = 580
+    Height = 164
+    Align = alCustom
+    Alignment = taCenter
+    Caption = 'Odpojeno'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -136
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    Transparent = True
   end
   object AL_Main: TActionList
     Left = 584

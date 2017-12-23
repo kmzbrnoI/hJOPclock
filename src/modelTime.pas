@@ -75,7 +75,7 @@ begin
  Self.ftime    := StrToTime(data[4]);
 
  Self.Show();
- F_Main.P_TimeResize(F_Main.P_Time);
+ F_Main.P_TimeResize(F_Main);
 end;//procedure
 
 ////////////////////////////////////////////////////////////////////////////////

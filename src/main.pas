@@ -8,12 +8,11 @@ uses
 
 type
   TF_Main = class(TForm)
-    P_Time: TPanel;
-    L_Time: TLabel;
     AL_Main: TActionList;
     A_Seconds: TAction;
     A_Help: TAction;
     A_Maximize: TAction;
+    L_Time: TLabel;
     procedure P_TimeResize(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure A_SecondsExecute(Sender: TObject);
@@ -44,7 +43,7 @@ begin
  if (client.status = TPanelConnectionStatus.opened) then
   begin
    mt.Show();
-   Self.P_TimeResize(Self.P_Time);
+   Self.P_TimeResize(Self);
   end;
 end;
 
@@ -80,8 +79,8 @@ begin
  w := Self.L_Time.Canvas.TextWidth(Self.L_Time.Caption);
  h := Self.L_Time.Canvas.TextHeight(Self.L_Time.Caption);
 
- while ((w < Self.P_Time.ClientWidth - _OFFSET * 2) and
-     (h < Self.P_Time.ClientHeight - _OFFSET * 2)) do
+ while ((w < Self.ClientWidth - _OFFSET * 2) and
+     (h < Self.ClientHeight - _OFFSET * 2)) do
   begin
    Self.L_Time.Font.Size := Self.L_Time.Font.Size + 1;
 
@@ -89,8 +88,8 @@ begin
    h := Self.L_Time.Canvas.TextHeight(Self.L_Time.Caption);
   end;
 
- while (((w > Self.P_Time.ClientWidth - _OFFSET * 2) or
-     (h > Self.P_Time.ClientHeight - _OFFSET * 2)) and (Self.L_Time.Font.Size > 1)) do
+ while (((w > Self.ClientWidth - _OFFSET * 2) or
+     (h > Self.ClientHeight - _OFFSET * 2)) and (Self.L_Time.Font.Size > 1)) do
   begin
    Self.L_Time.Font.Size := Self.L_Time.Font.Size - 1;
 
@@ -100,8 +99,8 @@ begin
 
  Self.L_Time.Width := w;
  Self.L_Time.Height := h;
- Self.L_Time.Left := (Self.P_Time.Width div 2) - (Self.L_Time.Width div 2);
- Self.L_Time.Top := (Self.P_Time.Height div 2) - (Self.L_Time.Height div 2);
+ Self.L_Time.Left := (Self.ClientWidth div 2) - (Self.L_Time.Width div 2);
+ Self.L_Time.Top := (Self.ClientHeight div 2) - (Self.L_Time.Height div 2);
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +109,7 @@ procedure TF_Main.UpdateStatus(status:string; color:TColor = clBlack);
 begin
  Self.L_Time.Caption := status;
  Self.L_Time.Font.Color := color;
- Self.P_TimeResize(Self.P_Time);
+ Self.P_TimeResize(Self);
 end;
 
 procedure TF_Main.UpdateTime(time:string; color:TColor = clBlack);
