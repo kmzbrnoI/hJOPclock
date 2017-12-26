@@ -13,7 +13,7 @@ type
   TModelTime = class
    private
     ftime:TTime;
-    fnasobic:Integer;
+    fnasobic:Real;
     fstarted:boolean;
     timer:TTimer;
     last_call:TDateTime;
@@ -30,7 +30,7 @@ type
      procedure Reset();
 
      property time:TTime read ftime;
-     property nasobic:Integer read fnasobic;
+     property nasobic:Real read fnasobic;
      property started:boolean read fstarted;
   end;
 
@@ -71,7 +71,7 @@ begin
  Self.timer.Enabled := Self.fstarted;
  Self.last_call     := Now;
 
- Self.fnasobic := StrToInt(data[3]);
+ Self.fnasobic := StrToFloat(data[3]);
  Self.ftime    := StrToTime(data[4]);
 
  Self.Show();
