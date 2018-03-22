@@ -18,6 +18,8 @@ uses
 {$R *.res}
 
 begin
+  DecimalSeparator := '.';
+
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.Title := 'hJOPclock';
