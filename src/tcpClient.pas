@@ -18,9 +18,9 @@ const
   _PING_TIMER_PERIOD_MS = 20000;
 
   // all acceptable protocl versions (server -> client)
-  protocol_version_accept : array[0..0] of string =
+  protocol_version_accept : array[0..1] of string =
     (
-      '1.0'
+      '1.0', '1.1'
     );
 
 type
