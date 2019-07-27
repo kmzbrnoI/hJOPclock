@@ -284,6 +284,14 @@ begin
    Self.fstatus := TPanelConnectionStatus.opened;
   end
 
+ else if ((parsed[1] = 'PING') and (parsed.Count > 2) and (UpperCase(parsed[2]) = 'REQ-RESP')) then
+  begin
+   if (parsed.Count >= 4) then
+     Self.SendLn('-;PONG;'+parsed[3])
+   else
+     Self.SendLn('-;PONG');
+  end
+
  else if (parsed[1] = 'MOD-CAS') then
    mt.ParseData(parsed);
 
