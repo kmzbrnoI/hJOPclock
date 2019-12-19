@@ -1,4 +1,4 @@
-unit main;
+Ôªøunit main;
 
 interface
 
@@ -123,7 +123,7 @@ end;
 procedure TF_Main.A_HelpExecute(Sender: TObject);
 begin
  Application.MessageBox(PChar('hJOPclock v' + GetVersion(Application.ExeName)+'.'+#13#10+
-                        'Vytvo¯il Jan Hor·Ëek pro KMé Brno I'),
+                        'Vytvo≈ôil Jan Hor√°ƒçek pro KM≈Ω Brno I'),
                         'Informace',
                         MB_OK or MB_ICONINFORMATION)
 end;

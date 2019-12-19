@@ -1,4 +1,4 @@
-unit version;
+ï»¿unit version;
 
 {
   Get version of an application.
@@ -22,7 +22,7 @@ var
   pinfo: ^VS_FIXEDFILEINFO;
   Major, Minor: word;
 begin
-  Result := 'Není dostupná';
+  Result := 'NenÃ­ dostupnÃ¡';
   size := GetFileVersionInfoSize(Pointer(FileName), handle);
   if size > 0 then begin
     GetMem(buffer, size);

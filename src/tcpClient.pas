@@ -1,4 +1,4 @@
-unit tcpClient;
+ï»¿unit tcpClient;
 
 {
   TCP client for communication with hJOPserver.
@@ -153,7 +153,7 @@ begin
  Self.tcpClient.Port := port;
 
  Self.fstatus := TPanelConnectionStatus.opening;
- F_Main.UpdateStatus('Pøipojuji...', clBlue);
+ F_Main.UpdateStatus('PÅ™ipojuji...', clBlue);
 
  try
    Self.tcpClient.Connect();
@@ -208,7 +208,7 @@ begin
   raise;
  end;
 
- F_Main.UpdateStatus('Pøipojeno', clBlack);
+ F_Main.UpdateStatus('PÅ™ipojeno', clBlack);
 
  Self.fstatus := TPanelConnectionStatus.handshake;
  Self.pingTimer.Enabled := true;
@@ -254,7 +254,7 @@ end;
 procedure TTCPClient.Timeout();
 begin
  Self.OnTcpClientDisconnected(Self);
- // Errors.writeerror('Spojení se serverem pøerušeno', 'KLIENT', '-'); TODO
+ // Errors.writeerror('SpojenÃ­ se serverem pÅ™eruÅ¡eno', 'KLIENT', '-'); TODO
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -278,8 +278,8 @@ begin
     end;//for i
 
    if (not found) then
-     Application.MessageBox(PChar('Verze protokolu, kterou požívá server ('+Self.parsed[2]+') není podporována'),
-       'Upozornìní', MB_OK OR MB_ICONWARNING);
+     Application.MessageBox(PChar('Verze protokolu, kterou poÅ¾Ã­vÃ¡ server ('+Self.parsed[2]+') nenÃ­ podporovÃ¡na'),
+       'UpozornÄ›nÃ­', MB_OK OR MB_ICONWARNING);
 
    Self.fstatus := TPanelConnectionStatus.opened;
   end
